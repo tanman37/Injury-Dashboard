@@ -147,6 +147,16 @@ for pos, feats in pos_features.items():
     print(f"ROC-AUC: {roc_auc_score(y_te, y_prob):.4f}")
 
     position_models[pos] = (model, feats)
+    y_prob = model.predict_proba(X_te)[:, 1]
+    print(f"\n{pos} Probability Distribution:")
+    print(f"  Min:    {y_prob.min():.4f}")
+    print(f"  Max:    {y_prob.max():.4f}")
+    print(f"  Mean:   {y_prob.mean():.4f}")
+    print(f"  Median: {pd.Series(y_prob).median():.4f}")
+    print(f"  80th %: {pd.Series(y_prob).quantile(0.80):.4f}")
+    print(f"  90th %: {pd.Series(y_prob).quantile(0.90):.4f}")
+    print(f"  95th %: {pd.Series(y_prob).quantile(0.95):.4f}")
+    print(f"  99th %: {pd.Series(y_prob).quantile(0.99):.4f}")
 
 for pos, (model, feats) in position_models.items():
     joblib.dump((model, feats), f"{pos}_injury_model.pkl")
