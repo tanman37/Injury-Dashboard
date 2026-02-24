@@ -251,10 +251,18 @@ def train_models():
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-def risk_category(prob):
-    if prob < 0.15:
+THRESHOLDS = {
+    "QB": (0.3828, 0.6906),
+    "RB": (0.5548, 0.6937),
+    "WR": (0.5510, 0.6721),
+    "TE": (0.5346, 0.6266),
+}
+
+def risk_category(prob, position):
+    low_threshold, high_threshold = THRESHOLDS[position]
+    if prob < low_threshold:
         return "LOW",    "risk-low"
-    elif prob < 0.35:
+    elif prob < high_threshold:
         return "MEDIUM", "risk-medium"
     else:
         return "HIGH",   "risk-high"
@@ -345,7 +353,7 @@ if st.button("CALCULATE INJURY RISK"):
 
     input_df = pd.DataFrame([input_data])[feats]
     prob     = model.predict_proba(input_df)[:, 1][0]
-    label, css_class = risk_category(prob)
+    label, css_class = risk_category(prob, position)
     pct = f"{prob * 100:.1f}%"
 
     st.markdown(f"""
