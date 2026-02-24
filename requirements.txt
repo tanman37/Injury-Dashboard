@@ -1,0 +1,6 @@
+streamlit
+polars
+pandas
+nflreadpy
+xgboost
+scikit-learn
